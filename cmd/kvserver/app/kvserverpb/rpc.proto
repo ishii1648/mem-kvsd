@@ -1,0 +1,40 @@
+syntax = "proto3";
+package rpcpb;
+
+import "gogoproto/gogo.proto";
+import "pkg/kvs/kvpb/kv.proto";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
+
+service KV {
+  rpc Put(PutRequest) returns (PutResponse);
+  rpc Get(GetRequest) returns (GetResponse);
+}
+
+message PutRequest {
+  bytes key = 1;
+  bytes value = 2;
+  int64 ttl = 3;
+}
+
+message PutResponse {
+  ResponseHeader header = 1;
+  kvpb.KeyValue prev_kv = 2;
+}
+
+message GetRequest {
+  bytes key = 1;
+}
+
+message GetResponse {
+  ResponseHeader header = 1;
+  kvpb.KeyValue prev_kv = 2;
+}
+
+message ResponseHeader {
+  int64 status_code = 1;
+}
